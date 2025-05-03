@@ -19,6 +19,6 @@ class HiveMembership(models.Model):
         
     role = models.CharField(max_length=50, choices=Role, default=Role.WORKER_BEE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user_membership")
-    hive = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="hive_membership")
+    hive = models.ForeignKey(Hive, on_delete=models.CASCADE, related_name="hive_membership")
     joined_on = models.DateTimeField(auto_now=False, auto_now_add=False)
 
