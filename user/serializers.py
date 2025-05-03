@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 
 
