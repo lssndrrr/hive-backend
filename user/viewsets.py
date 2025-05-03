@@ -44,6 +44,8 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     methods = ['post', 'get', 'patch', 'delete']
     serializer_class = UserSerializer
+    lookup_field = 'username'
+
 
     def retrieve(self, request, username=None):
         if username != request.user.username:
@@ -51,6 +53,11 @@ class UserViewSet(viewsets.ModelViewSet):
                 {"detail": "You do not have permission to view this user."},
                 status=status.HTTP_403_FORBIDDEN
             )
+        user = get_object_or_404(User, username=username)
+        if user:
+            return Response({
+                UserSerializer(user=user).data
+                })
 
     def destroy(self, request, pk=None):
         user = get_object_or_404(User, pk=pk)
