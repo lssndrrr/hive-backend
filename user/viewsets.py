@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 
 from .models import CustomUser
-from .serializers import LoginSerializer, RegisterSerializer
+from .serializers import LoginSerializer, RegisterSerializer, UserSerializer
 
 class AuthViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -24,11 +24,9 @@ class AuthViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def login(self, request):
         serializer = LoginSerializer(data=request.data)
-        print("here", serializer.is_valid())
         if serializer.is_valid():
-            return Response({"message": "Login successful!"}, status=status.HTTP_200_OK)
-        print("errors:", serializer.errors) 
-        return Response({"error": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"message": "Login successful!", "data": serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
     def create(self, request):
         serializer = RegisterSerializer(data=request.data)
@@ -36,3 +34,6 @@ class AuthViewSet(viewsets.ModelViewSet):
             user = serializer.save()
             return Response({"message": "User created successfully."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def retrieve(self, request):
+        serializer = UserSerializer()
