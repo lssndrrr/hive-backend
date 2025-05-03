@@ -4,18 +4,16 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import get_user_model, login, update_session_auth_hash
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
 
-from .models import CustomUser
-from .serializers import LoginSerializer, RegisterSerializer, UserSerializer
-
+from .serializers import LoginSerializer, RegisterSerializer, UserSerializer, PasswordUpdateSerializer
 
 User = get_user_model()
 
 class AuthViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
+    queryset = User.objects.all()
     permission_classes = [AllowAny]
     methods = ['post', 'get']
     serializer_class = RegisterSerializer
@@ -41,6 +39,12 @@ class AuthViewSet(viewsets.ModelViewSet):
             return Response({"message": "User created successfully."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
+    methods = ['post', 'get', 'patch', 'delete']
+    serializer_class = UserSerializer
+
     def retrieve(self, request, username=None):
         if username != request.user.username:
             return Response(
@@ -48,8 +52,22 @@ class AuthViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-
     def destroy(self, request, pk=None):
         user = get_object_or_404(User, pk=pk)
         user.delete()
         return Response({"message": "User deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
+    def change_password(self, request):
+        user = request.user
+        serializer = PasswordUpdateSerializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            user.set_password(serializer.validated_data['new_password'])
+            user.save()
+
+            update_session_auth_hash(request, user)
+
+            return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
