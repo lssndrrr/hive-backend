@@ -59,10 +59,11 @@ class UserViewSet(viewsets.ModelViewSet):
                 UserSerializer(user=user).data
                 })
 
-    def destroy(self, request, pk=None):
-        user = get_object_or_404(User, pk=pk)
-        user.delete()
-        return Response({"message": "User deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+    @action(detail=False, methods=['delete'])
+    def me(self, request):
+        request.user.delete()
+        return Response({"message": "Account successfully deleted."}, status=status.HTTP_204_NO_CONTENT)
+
 
     @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
     def change_password(self, request):
