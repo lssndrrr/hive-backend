@@ -2,6 +2,8 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Hive, HiveMembership
 from .serializers import HiveSerializer
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class HiveViewSet(viewsets.ModelViewSet):
