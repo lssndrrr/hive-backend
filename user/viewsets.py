@@ -2,6 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from django.contrib.auth import logout
 
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth import get_user_model, login, update_session_auth_hash
@@ -32,6 +33,14 @@ class AuthViewSet(viewsets.ModelViewSet):
             return Response({"message": "Login successful!", "data": serializer.data}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
+    def logout(self, request):
+        if request.user.is_authenticated:
+            logout(request)
+            return Response({"message": "Logout successful!"}, status=status.HTTP_200_OK)
+        return Response({"detail": "User is not logged in."}, status=status.HTTP_400_BAD_REQUEST)
+
+        
     def create(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
