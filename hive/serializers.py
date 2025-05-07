@@ -1,15 +1,18 @@
 from rest_framework import serializers
 from .models import Hive, HiveMembership
-from user.serializers import UserSerializer
+from user.models import CustomUser
 
+class HiveMemberUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'email']
 
-class HiveMemberSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+class HiveMembershipSerializer(serializers.ModelSerializer):
+    user = HiveMemberUserSerializer()
 
     class Meta:
         model = HiveMembership
         fields = ['user', 'role', 'joined_on']
-
 
 class HiveSerializer(serializers.ModelSerializer):
     members = serializers.SerializerMethodField()
@@ -19,5 +22,5 @@ class HiveSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'members']
 
     def get_members(self, obj):
-        memberships = HiveMembership.objects.filter(hive=obj).select_related('user')
-        return HiveMemberSerializer(memberships, many=True).data
+        memberships = obj.hive_membership.select_related('user').all()
+        return HiveMembershipSerializer(memberships, many=True).data
