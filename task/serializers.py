@@ -1,17 +1,11 @@
 from rest_framework import serializers
 from .models import Task
-from rest_framework import serializers
-from .models import Task
 from user.models import CustomUser
 
-class TaskUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ['id', 'username', 'email']
-
 class TaskSerializer(serializers.ModelSerializer):
-    assignee = TaskUserSerializer(allow_null=True, required=False)
+    assignee = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all(), required=False, allow_null=True)
     created_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = Task
         fields = [
@@ -26,3 +20,12 @@ class TaskSerializer(serializers.ModelSerializer):
             'hive',
             'created_by'
         ]
+        extra_kwargs = {
+            'name': {'required': False},
+            'description': {'required': False},
+            'assignee': {'required': False},
+            'status': {'required': False},
+            'priority': {'required': False},
+            'due_date': {'required': False},
+            'hive': {'required': False},
+        }
