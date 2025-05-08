@@ -10,8 +10,8 @@ class TaskUserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email']
 
 class TaskSerializer(serializers.ModelSerializer):
-    assignee = TaskUserSerializer(allow_null=True)
-    created_by = TaskUserSerializer()
+    assignee = TaskUserSerializer(allow_null=True, required=False)
+    created_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Task
         fields = [
