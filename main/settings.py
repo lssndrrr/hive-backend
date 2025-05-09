@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'user',
     'hive',
     'task',
+    'notifications',
 ]
 
 MIDDLEWARE = [
