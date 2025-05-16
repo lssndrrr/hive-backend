@@ -1,4 +1,4 @@
-## 🐝🧠 HiveMind (Backend)
+## 🐝🧠 Hive (Backend)
 
 HiveMind helps teams simplify group task management while still allowing for structured, detailed control when needed.
 It is a group task management web app built with **Nuxt 3** and **Django**.\
@@ -6,7 +6,7 @@ It is a group task management web app built with **Nuxt 3** and **Django**.\
 Early work in progress — MVP coming soon!\
 \
 This repository contains the backend.
-You can find the frontend [here](https://github.com/lssndrrr/hive-mind).
+You can find the frontend [here](https://github.com/lssndrrr/hive.git).
 
 ### 🏠 Local Setup
 
