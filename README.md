@@ -1,6 +1,6 @@
 ## 🐝🧠 Hive (Backend)
 
-HiveMind helps teams simplify group task management while still allowing for structured, detailed control when needed.
+Hive helps teams simplify group task management while still allowing for structured, detailed control when needed.
 It is a group task management web app built with **Nuxt 3** and **Django**.\
 \
 Early work in progress — MVP coming soon!\
